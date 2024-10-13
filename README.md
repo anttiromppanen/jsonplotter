@@ -1,4 +1,4 @@
-![jsonplotter logo](public/logo.png)
+![jsonplotter logo](https://github.com/anttiromppanen/jsonplotter/blob/main/public/logo.png)
 
 # jsonplotter
 
@@ -59,9 +59,11 @@ jsonplotter plot [options]
 ```javascript
 jsonplotter plot --u "https://dummyjson.com/recipes" -l 2
 ```
+<br />
 
-![url option](public/url_1.png)
-![url option](public/url_2.png)
+![url option](https://github.com/anttiromppanen/jsonplotter/blob/main/public/url_1.png)
+
+![url option](https://github.com/anttiromppanen/jsonplotter/blob/main/public/url_2.png)
 
 ## License:
 
