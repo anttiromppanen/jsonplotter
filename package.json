@@ -1,0 +1,43 @@
+{
+  "name": "jsonplotter",
+  "version": "1.0.0",
+  "description": "A CLI tool to get an overview of JSON-data in terminal.",
+  "main": "cli.js",
+  "bin": {
+    "jsonplotter": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsup src/cli.ts --minify",
+    "test": "test"
+  },
+  "keywords": [
+    "CLI",
+    "JSON",
+    "Visualization",
+    "API"
+  ],
+  "author": "Antti Romppanen",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.5",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/parser": "^8.8.1",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "jsdoc": "^4.0.3",
+    "prettier": "^3.3.3",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3"
+  }
+}
