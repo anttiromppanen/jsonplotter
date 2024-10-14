@@ -1,11 +1,17 @@
 {
   "name": "jsonplotter",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "A CLI tool to get an overview of JSON-data in terminal.",
-  "main": "cli.js",
+  "main": "dist/cli.js",
   "bin": {
     "jsonplotter": "dist/cli.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/cli.ts --minify",
     "test": "test"
@@ -18,6 +24,10 @@
   ],
   "author": "Antti Romppanen",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anttiromppanen/jsonplotter/issues"
+  },
+  "homepage": "https://github.com/anttiromppanen/jsonplotter",
   "dependencies": {
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.5",
