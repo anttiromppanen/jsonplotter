@@ -3,6 +3,8 @@ import CliTable3 from "cli-table3";
 import { chalkColorByJsType } from "./chalkUtils";
 
 export function extractDataToVisualize(data: any) {
+  if (Array.isArray(data)) return data;
+
   const keyValue = Object.entries(data);
 
   const dataToVisualize = keyValue.filter(([key, value]) => {
@@ -21,42 +23,99 @@ export function extractDataToVisualize(data: any) {
   return dataToVisualize;
 }
 
-export function printDataAsTable(data: any, limit?: number) {
+export function returnDataRowsTable() {
+  return new CliTable3({
+    head: [],
+    style: {
+      head: ["green"],
+      compact: true,
+      "padding-left": 2,
+      "padding-right": 2,
+    },
+    chars: {
+      top: "═",
+      "top-mid": "╤",
+      "top-left": "╔",
+      "top-right": "╗",
+      bottom: "═",
+      "bottom-mid": "╧",
+      "bottom-left": "╚",
+      "bottom-right": "╝",
+      left: "║",
+      "left-mid": "╟",
+      mid: "─",
+      "mid-mid": "┼",
+      right: "║",
+      "right-mid": "╢",
+      middle: "│",
+    },
+  });
+}
+
+export function getLoopLimit(data: any, limit?: number) {
+  // Default limit is 3
+  let loopLimit = 3;
+  if (limit && limit < data.length) loopLimit = limit;
+  else if (limit) loopLimit = data.length;
+  return loopLimit;
+}
+
+export function returnObjectInRow(item: any) {
+  const keyValue = Object.entries(item as any);
+  const threeFirstJoined = keyValue.slice(0, 3).map(([k, v]) => {
+    if (typeof v === "object") {
+      return `${k}: ${JSON.stringify(v)}`;
+    }
+    return `${k}: ${v}`;
+  });
+  return `{ ${threeFirstJoined.join(", ")}, ... }`;
+}
+
+export function returnArrayInRow(item: any) {
+  return `[ ${item.slice(0, 5).join(", ")} ]`;
+}
+
+export function addItemToTable(table: CliTable3.Table, key: any, item: any) {
+  const valueType = Array.isArray(item) ? "Array" : typeof item;
+  let itemValue = item;
+
+  if (typeof item === "object" && !Array.isArray(item)) {
+    itemValue = returnObjectInRow(item);
+  }
+  if (Array.isArray(item)) {
+    itemValue = returnArrayInRow(item);
+  }
+
+  table.push({
+    [chalk.visible(key || "")]: chalkColorByJsType(
+      itemValue.length > 50 ? itemValue.slice(0, 80) + "..." : itemValue,
+      valueType,
+    ),
+  });
+}
+
+export function printWhenDataIsArray(data: any, limit?: number) {
+  const table = returnDataRowsTable();
+  const loopLimit = getLoopLimit(data, limit);
+
+  for (let i = 0; i < loopLimit; i++) {
+    const itemKeyValue = Object.entries(data[i]);
+
+    itemKeyValue.forEach(([key, value]: [any, any]) => {
+      console.log(key, value);
+    });
+  }
+}
+
+export function printWhenDataContainsKeyValues(data: any, limit?: number) {
   data.forEach(([key, value]: [any, any]) => {
-    let loopLimit = 3;
-    if (limit && limit < value.length) loopLimit = limit;
-    else if (limit) loopLimit = value.length;
+    const loopLimit = getLoopLimit(value, limit);
 
     console.log(
       `\n${chalk.bgBlack.bold.green(key)} - ${chalk.bgBlack.gray(`showing ${chalk.bold.white(loopLimit)} of ${chalk.bold.white(value.length)} total items\n`)}`,
     );
 
-    const table = new CliTable3({
-      head: [],
-      style: {
-        head: ["green"],
-        compact: true,
-        "padding-left": 2,
-        "padding-right": 2,
-      },
-      chars: {
-        top: "═",
-        "top-mid": "╤",
-        "top-left": "╔",
-        "top-right": "╗",
-        bottom: "═",
-        "bottom-mid": "╧",
-        "bottom-left": "╚",
-        "bottom-right": "╝",
-        left: "║",
-        "left-mid": "╟",
-        mid: "─",
-        "mid-mid": "┼",
-        right: "║",
-        "right-mid": "╢",
-        middle: "│",
-      },
-    });
+    const table = returnDataRowsTable();
 
     table.push({});
 
@@ -64,33 +123,17 @@ export function printDataAsTable(data: any, limit?: number) {
       let item = value[i];
       const itemKeyValue = Object.entries(item);
       itemKeyValue.forEach(([key, value]: [any, any]) => {
-        const valueType = Array.isArray(value) ? "Array" : typeof value;
-
-        if (typeof value === "object" && !Array.isArray(value)) {
-          const keyValue = Object.entries(value as any);
-          const threeFirstJoined = keyValue.slice(0, 3).map(([k, v]) => {
-            if (typeof v === "object") {
-              return `${k}: ${JSON.stringify(v)}`;
-            }
-            return `${k}: ${v}`;
-          });
-          value = `{ ${threeFirstJoined.join(", ")}, ... }`;
-        }
-        if (Array.isArray(value)) {
-          value = `[ ${value.slice(0, 5).join(", ")} ]`;
-        }
-        table.push({
-          [chalk.visible(key || "")]: chalkColorByJsType(
-            value.length > 50 ? value.slice(0, 80) + "..." : value,
-            valueType,
-          ),
-        });
+        addItemToTable(table, key, value);
       });
       table.push({});
       table.push({});
     }
     console.log(table.toString());
   });
+}
+
+export function printDataAsTable(data: any, limit?: number) {
+  printWhenDataContainsKeyValues(data, limit);
 }
 
 export function printDataInformation(data: any[]) {
